@@ -1,4 +1,4 @@
-package pkg
+package logger
 
 import (
 	"github.com/rs/zerolog"
@@ -13,7 +13,7 @@ type Logger struct {
 func NewLogger() *Logger {
 	output := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339}
 
-	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	zerolog.SetGlobalLevel(zerolog.GlobalLevel())
 
 	return &Logger{
 		logger: zerolog.New(output).With().Timestamp().Logger(),
