@@ -1,0 +1,44 @@
+?   	mango_crm/internal/orchard/application/usecase	[no test files]
+?   	mango_crm/internal/orchard/domain/entity	[no test files]
+?   	mango_crm/internal/orchard/domain/repository	[no test files]
+?   	mango_crm/internal/orchard/infraestructure/model	[no test files]
+?   	mango_crm/pkg/constants	[no test files]
+	mango_crm/pkg/db		coverage: 0.0% of statements
+	mango_crm/pkg/logger		coverage: 0.0% of statements
+	mango_crm/pkg/config		coverage: 0.0% of statements
+	mango_crm/cmd/app		coverage: 0.0% of statements
+	mango_crm/pkg/mappers		coverage: 0.0% of statements
+=== RUN   TestImpl_Create
+=== RUN   TestImpl_Create/success
+=== RUN   TestImpl_Create/repo_error
+--- PASS: TestImpl_Create (0.00s)
+    --- PASS: TestImpl_Create/success (0.00s)
+    --- PASS: TestImpl_Create/repo_error (0.00s)
+=== RUN   TestImpl_GetById
+=== RUN   TestImpl_GetById/found
+=== RUN   TestImpl_GetById/not_found
+--- PASS: TestImpl_GetById (0.00s)
+    --- PASS: TestImpl_GetById/found (0.00s)
+    --- PASS: TestImpl_GetById/not_found (0.00s)
+=== RUN   TestImpl_List
+=== RUN   TestImpl_List/success
+=== RUN   TestImpl_List/repo_error
+--- PASS: TestImpl_List (0.00s)
+    --- PASS: TestImpl_List/success (0.00s)
+    --- PASS: TestImpl_List/repo_error (0.00s)
+=== RUN   TestImpl_Update
+=== RUN   TestImpl_Update/success
+=== RUN   TestImpl_Update/repo_error
+--- PASS: TestImpl_Update (0.00s)
+    --- PASS: TestImpl_Update/success (0.00s)
+    --- PASS: TestImpl_Update/repo_error (0.00s)
+=== RUN   TestImpl_Delete
+=== RUN   TestImpl_Delete/success
+=== RUN   TestImpl_Delete/repo_error
+--- PASS: TestImpl_Delete (0.00s)
+    --- PASS: TestImpl_Delete/success (0.00s)
+    --- PASS: TestImpl_Delete/repo_error (0.00s)
+PASS
+coverage: 100.0% of statements
+ok  	mango_crm/internal/orchard/application/impl	0.003s	coverage: 100.0% of statements
+	mango_crm/internal/orchard/infraestructure		coverage: 0.0% of statements

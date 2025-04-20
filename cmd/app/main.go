@@ -6,14 +6,10 @@ import (
 	"mango_crm/pkg/config"
 	"mango_crm/pkg/db"
 	"mango_crm/pkg/logger"
-	"mango_crm/pkg/orchard"
-	"mango_crm/pkg/server"
 )
 
 var appModule = fx.Options(
 	fx.Provide(logger.NewLogger, config.LoadConfig, db.NewMongoClient),
-	orchard.Module,
-	server.Module,
 	fx.Invoke(run),
 )
 

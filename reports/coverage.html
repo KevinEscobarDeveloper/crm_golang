@@ -1,0 +1,447 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>app: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">mango_crm/cmd/app/main.go (0.0%)</option>
+				
+				<option value="file1">mango_crm/internal/orchard/application/impl/orchard_use_case_impl.go (100.0%)</option>
+				
+				<option value="file2">mango_crm/internal/orchard/infraestructure/mongo_repository_impl.go (0.0%)</option>
+				
+				<option value="file3">mango_crm/pkg/config/config.go (0.0%)</option>
+				
+				<option value="file4">mango_crm/pkg/db/mongo.go (0.0%)</option>
+				
+				<option value="file5">mango_crm/pkg/logger/logger.go (14.3%)</option>
+				
+				<option value="file6">mango_crm/pkg/mappers/orchard_mapper.go (0.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package main
+
+import (
+        "go.mongodb.org/mongo-driver/v2/mongo"
+        "go.uber.org/fx"
+        "mango_crm/pkg/config"
+        "mango_crm/pkg/db"
+        "mango_crm/pkg/logger"
+)
+
+var appModule = fx.Options(
+        fx.Provide(logger.NewLogger, config.LoadConfig, db.NewMongoClient),
+        fx.Invoke(run),
+)
+
+func run(log *logger.Logger, config *config.Config, client *mongo.Client) <span class="cov0" title="0">{
+        log.Debug("✅ Logger funcionando desde módulo local.")
+        log.Info("Config: " + config.MongoURI)
+        log.Info("Config kafka broker: " + config.KafkaBrokers[0])
+        log.Info("Orchard application initialized.")
+}</span>
+
+func main() <span class="cov0" title="0">{
+        app := fx.New(appModule)
+        app.Run()
+}</span>
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package impl
+
+import (
+        "context"
+        "mango_crm/internal/orchard/application/usecase"
+        "mango_crm/internal/orchard/domain/entity"
+        "mango_crm/internal/orchard/domain/repository"
+        "mango_crm/pkg/logger"
+)
+
+// impl is a struct that encapsulates repository interaction and logging functionality for use case operations.
+type impl struct {
+        repo   repository.Repository
+        logger *logger.Logger
+}
+
+// NewOrchardUseCase initializes and returns an implementation of the OrchardUseCase interface using the provided dependencies.
+func NewOrchardUseCase(repo repository.Repository, logger *logger.Logger) usecase.OrchardUseCase <span class="cov8" title="1">{
+        return &amp;impl{
+                repo:   repo,
+                logger: logger,
+        }
+}</span>
+
+// Create persists a new orchard entity to the repository.
+// It logs an informational message and passes the entity to the repository's Save method.
+// Returns an error if the save operation fails.
+func (i *impl) Create(ctx context.Context, o *entity.Orchard) error <span class="cov8" title="1">{
+        i.logger.Info("Creating new orchard")
+        return i.repo.Save(ctx, o)
+}</span>
+
+// GetById retrieves an Orchard entity by its unique identifier from the repository.
+// Returns the Orchard entity if found, or an error if retrieval fails.
+func (i *impl) GetById(ctx context.Context, id string) (*entity.Orchard, error) <span class="cov8" title="1">{
+        i.logger.Info("Getting orchard by ID")
+        return i.repo.FindById(ctx, id)
+}</span>
+
+// List retrieves a list of all orchard entities from the repository and logs the operation.
+func (i *impl) List(ctx context.Context) ([]*entity.Orchard, error) <span class="cov8" title="1">{
+        i.logger.Info("Listing all orchards")
+        return i.repo.FindAll(ctx)
+}</span>
+
+// Update updates an existing orchard in the repository and logs the operation. Returns an error if the update fails.
+func (i *impl) Update(ctx context.Context, o *entity.Orchard) error <span class="cov8" title="1">{
+        i.logger.Info("Updating orchard")
+        return i.repo.Update(ctx, o)
+}</span>
+
+// Delete removes an orchard record identified by the specified ID from the repository. Returns an error if the operation fails.
+func (i *impl) Delete(ctx context.Context, id string) error <span class="cov8" title="1">{
+        i.logger.Info("Deleting orchard")
+        return i.repo.Delete(ctx, id)
+}</span>
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package infraestructure
+
+import (
+        "context"
+        "errors"
+        "go.mongodb.org/mongo-driver/v2/bson"
+        "go.mongodb.org/mongo-driver/v2/mongo"
+        "mango_crm/internal/orchard/domain/entity"
+        "mango_crm/internal/orchard/domain/repository"
+        "mango_crm/internal/orchard/infraestructure/model"
+        "mango_crm/pkg/logger"
+        "mango_crm/pkg/mappers"
+)
+
+type MongoRepositoryImpl struct {
+        collection *mongo.Collection
+        logger     *logger.Logger
+}
+
+func NewMongoRepositoryImpl(col *mongo.Collection, logger *logger.Logger) repository.Repository <span class="cov0" title="0">{
+        return &amp;MongoRepositoryImpl{collection: col, logger: logger}
+}</span>
+func (m *MongoRepositoryImpl) Save(ctx context.Context, o *entity.Orchard) error <span class="cov0" title="0">{
+        _, err := m.collection.InsertOne(ctx, mappers.ToModel(o))
+        if err != nil </span><span class="cov0" title="0">{
+                m.logger.Error("Error saving orchard: " + err.Error())
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (m *MongoRepositoryImpl) FindById(ctx context.Context, id string) (*entity.Orchard, error) <span class="cov0" title="0">{
+        filter := bson.M{"_id": id}
+
+        var orchard model.Orchard
+        err := m.collection.FindOne(ctx, filter).Decode(&amp;orchard)
+        if err != nil </span><span class="cov0" title="0">{
+                if errors.Is(err, mongo.ErrNoDocuments) </span><span class="cov0" title="0">{
+                        m.logger.Warn("Orchard not found with ID: " + id)
+                        return nil, nil
+                }</span>
+                <span class="cov0" title="0">m.logger.Error("Error finding orchard by ID: " + err.Error())
+                return nil, err</span>
+        }
+
+        <span class="cov0" title="0">return mappers.ToEntity(orchard), nil</span>
+}
+func (m *MongoRepositoryImpl) FindAll(ctx context.Context) ([]*entity.Orchard, error) <span class="cov0" title="0">{
+        var orchardModels []model.Orchard
+        cursor, err := m.collection.Find(ctx, bson.M{})
+        if err != nil </span><span class="cov0" title="0">{
+                m.logger.Error("Error finding all orchards: " + err.Error())
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">defer func(cursor *mongo.Cursor, ctx context.Context) </span><span class="cov0" title="0">{
+                err := cursor.Close(ctx)
+                if err != nil </span><span class="cov0" title="0">{
+                        m.logger.Error("Error closing cursor: " + err.Error())
+                }</span>
+        }(cursor, ctx)
+
+        <span class="cov0" title="0">if err = cursor.All(ctx, &amp;orchardModels); err != nil </span><span class="cov0" title="0">{
+                m.logger.Error("Error decoding orchards: " + err.Error())
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">var orchards []*entity.Orchard
+        for _, m := range orchardModels </span><span class="cov0" title="0">{
+                orchards = append(orchards, mappers.ToEntity(m))
+        }</span>
+
+        <span class="cov0" title="0">return orchards, nil</span>
+}
+
+func (m *MongoRepositoryImpl) Update(ctx context.Context, o *entity.Orchard) error <span class="cov0" title="0">{
+        _, err := m.collection.UpdateOne(ctx, bson.M{"_id": o.ID}, bson.M{"$set": mappers.ToModelWithoutID(o)})
+        if err != nil </span><span class="cov0" title="0">{
+                m.logger.Error("Error updating orchard: " + err.Error())
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (m *MongoRepositoryImpl) Delete(ctx context.Context, id string) error <span class="cov0" title="0">{
+        filter := bson.M{"_id": id}
+        _, err := m.collection.DeleteOne(ctx, filter)
+        if err != nil </span><span class="cov0" title="0">{
+                m.logger.Error("Error deleting orchard: " + err.Error())
+                return err
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package config
+
+import (
+        "github.com/spf13/viper"
+        "mango_crm/pkg/logger"
+)
+
+// Config agrupa la configuración de la aplicación.
+// Cada etiqueta `mapstructure:"&lt;KEY&gt;"` indica a Viper (que usa
+// mitchellh/mapstructure) qué nombre de clave mapear desde el config file o env var.
+//
+// Ejemplo: para mapstructure:"MONGO_URI", Viper buscará la clave
+// MONGO_URI en el YAML o en la variable de entorno.
+type Config struct {
+        MongoURI     string   `mapstructure:"MONGO_URI"`
+        KafkaBrokers []string `mapstructure:"KAFKA_BROKERS"`
+        HttpPort     int      `mapstructure:"HTTP_PORT"`
+}
+
+func LoadConfig() (*Config, error) <span class="cov0" title="0">{
+        viper.AddConfigPath("config/") // carpeta relativa al ejecutable :contentReference[oaicite:0]{index=0}
+        viper.SetConfigName("config")  // sin extensión
+        viper.SetConfigType("yaml")
+        log := logger.NewLogger()
+        viper.AutomaticEnv()
+
+        if err := viper.ReadInConfig(); err != nil </span><span class="cov0" title="0">{
+                log.Error("Error retrieving config file: " + err.Error())
+        }</span>
+
+        <span class="cov0" title="0">var cfg Config
+        if err := viper.Unmarshal(&amp;cfg); err != nil </span><span class="cov0" title="0">{
+                log.Error("Error parsing config file: " + err.Error())
+        }</span>
+        <span class="cov0" title="0">return &amp;cfg, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package db
+
+import (
+        "context"
+        "time"
+
+        "mango_crm/pkg/config"
+
+        "go.mongodb.org/mongo-driver/v2/mongo"
+        "go.mongodb.org/mongo-driver/v2/mongo/options"
+)
+
+func NewMongoClient(cfg *config.Config) (*mongo.Client, error) <span class="cov0" title="0">{
+        ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+        defer cancel()
+
+        clientOpts := options.Client().ApplyURI(cfg.MongoURI)
+        client, err := mongo.Connect(clientOpts)
+
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov0" title="0">if err := client.Ping(ctx, nil); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov0" title="0">return client, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package logger
+
+import (
+        "github.com/rs/zerolog"
+        "os"
+        "time"
+)
+
+// Logger is a wrapper around zerolog.Logger that provides structured logging functionality.
+type Logger struct {
+        logger zerolog.Logger
+}
+
+// NewLogger initializes and returns a new instance of Logger with a configured zerolog console writer and timestamp.
+func NewLogger() *Logger <span class="cov0" title="0">{
+        output := zerolog.ConsoleWriter{Out: os.Stdout, TimeFormat: time.RFC3339}
+
+        zerolog.SetGlobalLevel(zerolog.GlobalLevel())
+
+        return &amp;Logger{
+                logger: zerolog.New(output).With().Timestamp().Logger(),
+        }
+}</span>
+
+// Info logs an informational message using the embedded zerolog.Logger instance.
+func (l *Logger) Info(msg string) <span class="cov8" title="1">{
+        l.logger.Info().Msg(msg)
+}</span>
+
+// Debug logs a debug-level message with a custom prefix.
+func (l *Logger) Debug(msg string) <span class="cov0" title="0">{
+        l.logger.Debug().Msg("custom log " + msg)
+}</span>
+
+// Warn logs a warning message with a custom prefix.
+func (l *Logger) Warn(msg string) <span class="cov0" title="0">{
+        l.logger.Warn().Msg("custom log " + msg)
+}</span>
+
+// Error logs an error-level message with a custom prefix.
+func (l *Logger) Error(msg string) <span class="cov0" title="0">{
+        l.logger.Error().Msg("custom log " + msg)
+}</span>
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package mappers
+
+import (
+        "mango_crm/internal/orchard/domain/entity"
+        "mango_crm/internal/orchard/infraestructure/model"
+        "time"
+)
+
+func ToEntity(m model.Orchard) *entity.Orchard <span class="cov0" title="0">{
+        return &amp;entity.Orchard{
+                ID:       m.ObjectID,
+                Name:     m.Name,
+                Location: m.Location,
+                Owner:    m.Owner,
+                Active:   m.Active,
+                CreateAt: m.CreatedAt,
+        }
+}</span>
+
+func ToModel(e *entity.Orchard) model.Orchard <span class="cov0" title="0">{
+        return model.Orchard{
+                ObjectID:  e.ID,
+                Name:      e.Name,
+                Location:  e.Location,
+                Owner:     e.Owner,
+                Active:    e.Active,
+                CreatedAt: time.Now(),
+        }
+}</span>
+
+func ToModelWithoutID(e *entity.Orchard) map[string]interface{} <span class="cov0" title="0">{
+        return map[string]interface{}{
+                "name":       e.Name,
+                "location":   e.Location,
+                "owner":      e.Owner,
+                "active":     e.Active,
+                "created_at": e.CreateAt,
+        }
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
