@@ -5,3 +5,6 @@ KAFKA_BROKERS:
   - "localhost:9092"
   - "localhost:9093"
 HTTP_PORT: 8080
+mongo:
+  database: mango
+  collection: orchards
