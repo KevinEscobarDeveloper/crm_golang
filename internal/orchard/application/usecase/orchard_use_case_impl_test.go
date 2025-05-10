@@ -1,4 +1,4 @@
-package impl
+package usecase
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 
 	"mango_crm/internal/orchard/domain/entity"
 	"mango_crm/pkg/logger"
-	
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )

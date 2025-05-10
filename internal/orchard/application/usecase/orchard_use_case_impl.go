@@ -1,8 +1,9 @@
-package impl
+package usecase
 
 import (
 	"context"
-	"mango_crm/internal/orchard/application/usecase"
+	"mango_crm/internal/orchard/domain/usecase"
+
 	"mango_crm/internal/orchard/domain/entity"
 	"mango_crm/internal/orchard/domain/repository"
 	"mango_crm/pkg/logger"

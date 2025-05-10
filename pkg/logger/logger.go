@@ -1,9 +1,10 @@
 package logger
 
 import (
-	"github.com/rs/zerolog"
 	"os"
 	"time"
+
+	"github.com/rs/zerolog"
 )
 
 // Logger is a wrapper around zerolog.Logger that provides structured logging functionality.
