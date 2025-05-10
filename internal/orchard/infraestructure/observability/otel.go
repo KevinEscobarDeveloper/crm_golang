@@ -3,7 +3,6 @@ package observability
 import (
 	"context"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
-	"log"
 	"net/http"
 
 	"go.opentelemetry.io/otel"
@@ -15,41 +14,31 @@ import (
 
 type Config struct {
 	ServiceName  string
-	OTLPEndpoint string
-	MetricsAddr  string
+	OtlpEndpoint string
 }
 
-func Init(cfg Config) (shutdown func(context.Context) error) {
-	/* ---------- Tracing ---------- */
+func Init(cfg Config) (func(context.Context) error, http.Handler, error) {
+	// --- Tracing ---
 	traceExp, err := otlptracehttp.New(context.Background(),
-		otlptracehttp.WithEndpoint(cfg.OTLPEndpoint),
+		otlptracehttp.WithEndpoint(cfg.OtlpEndpoint),
 		otlptracehttp.WithInsecure(),
 	)
 	if err != nil {
-		log.Fatal(err)
+		return nil, nil, err
 	}
-
 	tp := sdktrace.NewTracerProvider(
 		sdktrace.WithBatcher(traceExp),
 		sdktrace.WithResource(resource.Default()),
 	)
 	otel.SetTracerProvider(tp)
 
-	/* ---------- Metrics ---------- */
+	// --- Metrics ---
 	metricsExp, err := prometheus.New()
 	if err != nil {
-		log.Fatal(err)
+		return nil, nil, err
 	}
-
 	mp := metric.NewMeterProvider(metric.WithReader(metricsExp))
 	otel.SetMeterProvider(mp)
 
-	/* ---------- /metrics ---------- */
-	go func() {
-		http.Handle("/metrics", metricsExp)
-		log.Println("Prometheus /metrics at", cfg.MetricsAddr)
-		log.Fatal(http.ListenAndServe(cfg.MetricsAddr, nil))
-	}()
-
-	return tp.Shutdown
+	return tp.Shutdown, metricsExp, nil
 }

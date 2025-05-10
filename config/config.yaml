@@ -4,6 +4,8 @@ MONGO_URI: "mongodb://localhost:30001/mango"
 KAFKA_BROKERS:
   - "localhost:9092"
   - "localhost:9093"
+METRICS_ADDR: ":2222"
+OTLP_ENDPOINT: localhost:4318
 HTTP_PORT: 8080
 mongo:
   database: mango

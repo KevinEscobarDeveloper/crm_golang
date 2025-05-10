@@ -20,45 +20,52 @@ func init() {
 		"http.server.requests",
 		metric.WithDescription("Total Request count"),
 	)
-
 	if err != nil {
 		panic(err)
 	}
 
 	successCounter, err = meter.Int64Counter(
 		"http.server.responses.success",
-		metric.WithDescription("Total Response success count"))
-
+		metric.WithDescription("Total Response success count"),
+	)
 	if err != nil {
 		panic(err)
 	}
 
 	errorCounter, err = meter.Int64Counter(
 		"http.server.responses.errors",
-		metric.WithDescription("Total responses with error"))
-
+		metric.WithDescription("Total responses with error"),
+	)
 	if err != nil {
 		panic(err)
 	}
 }
+
 func IncRequest(ctx context.Context, method, route string) {
 	requestCounter.Add(ctx, 1,
-		attribute.String("method", method),
-		attribute.String("route", route),
+		metric.WithAttributes(
+			attribute.String("method", method),
+			attribute.String("route", route),
+		),
 	)
 }
+
 func IncSuccess(ctx context.Context, method, route string, status int) {
 	successCounter.Add(ctx, 1,
-		attribute.String("method", method),
-		attribute.String("route", route),
-		attribute.Int("status_code", status),
+		metric.WithAttributes(
+			attribute.String("method", method),
+			attribute.String("route", route),
+			attribute.Int("status_code", status),
+		),
 	)
 }
 
 func IncError(ctx context.Context, method, route string, status int) {
 	errorCounter.Add(ctx, 1,
-		attribute.String("method", method),
-		attribute.String("route", route),
-		attribute.Int("status_code", status),
+		metric.WithAttributes(
+			attribute.String("method", method),
+			attribute.String("route", route),
+			attribute.Int("status_code", status),
+		),
 	)
 }

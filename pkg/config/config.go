@@ -15,11 +15,13 @@ type Config struct {
 	MongoURI     string   `mapstructure:"MONGO_URI"`
 	KafkaBrokers []string `mapstructure:"KAFKA_BROKERS"`
 	HttpPort     int      `mapstructure:"HTTP_PORT"`
+	OtlpEndpoint string   `mapstructure:"OTLP_ENDPOINT"`
+	MetricsAddr  string   `mapstructure:"METRICS_ADDR"`
 }
 
 func LoadConfig() (*Config, error) {
-	viper.AddConfigPath("config/") // carpeta relativa al ejecutable :contentReference[oaicite:0]{index=0}
-	viper.SetConfigName("config")  // sin extensión
+	viper.AddConfigPath("config/")
+	viper.SetConfigName("config") // sin extensión
 	viper.SetConfigType("yaml")
 	log := logger.NewLogger()
 	viper.AutomaticEnv()
