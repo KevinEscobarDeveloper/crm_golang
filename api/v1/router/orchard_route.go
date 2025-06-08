@@ -7,5 +7,6 @@ import (
 )
 
 func Register(e *echo.Echo, h *handler.OrchardHandler) {
-	e.POST(route.APIVersion, h.Create)
+	g := e.Group(route.OrchardBasePath)
+	g.POST("", h.Create)
 }

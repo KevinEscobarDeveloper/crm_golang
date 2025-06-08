@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  mongo1:
+    image: mongo:7.0
+    container_name: mango-mongo1
+    ports:
+      - "30001:27017"
+    volumes:
+      - mongo1_data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  orchard-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: orchard-service
+    depends_on:
+      mongo1:
+        condition: service_healthy
+    environment:
+      - MONGO_URI=mongodb://mongo1:27017/mango
+      - OTLP_ENDPOINT=http://otel-collector:4318
+      - HTTP_PORT=8080
+    volumes:
+      - ../config:/home/appuser/config
+    ports:
+      - "8080:8080"
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.53
+    container_name: jaeger
+    ports:
+      - "16686:16686"
+      - "14268:14268"
+      - "14250:14250"
+      - "4317:4317"
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+
+  otel-collector:
+    image: otel/opentelemetry-collector:0.91.0
+    container_name: otel-collector
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "4318:4318"
+      - "8888:8888"
+    depends_on:
+      - jaeger
+    healthcheck:
+      test: curl --fail http://localhost:8888/metrics || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
+    command:
+      - --config.file=/etc/prometheus/prometheus.yaml
+    ports:
+      - "9090:9090"
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+
+volumes:
+  mongo1_data:

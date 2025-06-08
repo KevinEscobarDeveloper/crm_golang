@@ -17,7 +17,7 @@ var (
 func init() {
 	var err error
 	requestCounter, err = meter.Int64Counter(
-		"http.server.requests",
+		"http_server_requests",
 		metric.WithDescription("Total Request count"),
 	)
 	if err != nil {
@@ -25,7 +25,7 @@ func init() {
 	}
 
 	successCounter, err = meter.Int64Counter(
-		"http.server.responses.success",
+		"http_server_responses_success",
 		metric.WithDescription("Total Response success count"),
 	)
 	if err != nil {
@@ -33,7 +33,7 @@ func init() {
 	}
 
 	errorCounter, err = meter.Int64Counter(
-		"http.server.responses.errors",
+		"http_server_responses_errors",
 		metric.WithDescription("Total responses with error"),
 	)
 	if err != nil {

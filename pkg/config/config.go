@@ -20,7 +20,7 @@ type Config struct {
 }
 
 func LoadConfig() (*Config, error) {
-	viper.AddConfigPath("config/")
+	viper.AddConfigPath("/home/appuser/config")
 	viper.SetConfigName("config") // sin extensión
 	viper.SetConfigType("yaml")
 	log := logger.NewLogger()

@@ -2,6 +2,7 @@ package observability
 
 import (
 	"context"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp"
 	"net/http"
 
@@ -18,7 +19,7 @@ type Config struct {
 }
 
 func Init(cfg Config) (func(context.Context) error, http.Handler, error) {
-	// --- Tracing ---
+	// Tracing
 	traceExp, err := otlptracehttp.New(context.Background(),
 		otlptracehttp.WithEndpoint(cfg.OtlpEndpoint),
 		otlptracehttp.WithInsecure(),
@@ -32,7 +33,7 @@ func Init(cfg Config) (func(context.Context) error, http.Handler, error) {
 	)
 	otel.SetTracerProvider(tp)
 
-	// --- Metrics ---
+	// Metrics
 	metricsExp, err := prometheus.New()
 	if err != nil {
 		return nil, nil, err
@@ -40,5 +41,6 @@ func Init(cfg Config) (func(context.Context) error, http.Handler, error) {
 	mp := metric.NewMeterProvider(metric.WithReader(metricsExp))
 	otel.SetMeterProvider(mp)
 
-	return tp.Shutdown, metricsExp, nil
+	return tp.Shutdown, promhttp.Handler(), nil
+
 }

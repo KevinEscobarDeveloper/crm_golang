@@ -1,6 +1,6 @@
 package route
 
 const (
-	APIVersion      = "/v1"
-	OrchardBasePath = APIVersion + "/orchard"
+	APIVersion      = "/api/v1"
+	OrchardBasePath = APIVersion + "/orchards"
 )

@@ -1,11 +1,11 @@
 # configs/config.yaml
 
-MONGO_URI: "mongodb://localhost:30001/mango"
+MONGO_URI: "mongodb://mongo1:27017/mango"
 KAFKA_BROKERS:
   - "localhost:9092"
   - "localhost:9093"
 METRICS_ADDR: ":2222"
-OTLP_ENDPOINT: localhost:4318
+OTLP_ENDPOINT: http://otel-collector:4318
 HTTP_PORT: 8080
 mongo:
   database: mango

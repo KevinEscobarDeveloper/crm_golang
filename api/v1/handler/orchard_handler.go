@@ -12,7 +12,7 @@ type OrchardHandler struct {
 }
 
 func NewOrchardHandler(u usecase.OrchardUseCase) *OrchardHandler {
-	return &OrchardHandler{}
+	return &OrchardHandler{usecase: u}
 }
 
 func (h *OrchardHandler) Create(c echo.Context) error {
