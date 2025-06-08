@@ -1,5 +1,6 @@
 package constants
 
 const (
-	ApiV1 = "/api/v1"
+	APIVersion      = "/api/v1"
+	OrchardBasePath = "/orchards"
 )

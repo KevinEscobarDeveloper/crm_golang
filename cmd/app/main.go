@@ -21,6 +21,7 @@ import (
 	"mango_crm/pkg/config"
 	dbconst "mango_crm/pkg/constants"
 	"mango_crm/pkg/db"
+	errorsPkg "mango_crm/pkg/errors"
 	"mango_crm/pkg/logger"
 )
 
@@ -48,11 +49,13 @@ func run(log *logger.Logger, cfg *config.Config, client *mongo.Client) {
 	uc := usecase.NewOrchardUseCase(repo, log)
 
 	e := echo.New()
+	e.HTTPErrorHandler = errorsPkg.HandleError
 	e.Use(observability.MetricsMiddleware())
 	e.GET("/metrics", echo.WrapHandler(promHandler))
 	router.RegisterRoutes(router.RouterConfig{
 		Echo:           e,
 		OrchardUseCase: uc,
+		Log:            log,
 	})
 
 	go func() {
@@ -72,4 +75,5 @@ func run(log *logger.Logger, cfg *config.Config, client *mongo.Client) {
 
 func main() {
 	fx.New(appModule).Run()
+
 }
